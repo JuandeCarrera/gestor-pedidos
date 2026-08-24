@@ -1,0 +1,43 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("STAFF") // STAFF, ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id                String   @id @default(cuid())
+  readableId        String   @unique // Auto-generated short ID humans (e.g., #1001)
+  customerPhone     String
+  customerName      String?
+  productDetails    String? // Made optional, can be a summary
+  amount            Float
+  status            String   @default("PENDING_PAYMENT") // PENDING_PAYMENT, PAID, COLLECTED
+  stripePaymentLink String?
+  stripeSessionId   String?
+  paidAt            DateTime?
+  collectedAt       DateTime?
+  items             OrderItem[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  name      String
+  price     Float
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}

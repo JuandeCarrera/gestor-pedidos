@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN "collectedAt" DATETIME;
+ALTER TABLE "Order" ADD COLUMN "paidAt" DATETIME;
